@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SF_repo1Type" ApplicationTypeVersion="1.0.14" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="StatelessClient_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="StatelessServer_InstanceCount" DefaultValue="-1" />
+  </Parameters>
+  <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
+       should match the Name and Version attributes of the ServiceManifest element defined in the 
+       ServiceManifest.xml file. -->
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="StatelessClientPkg" ServiceManifestVersion="1.0.14" />
+    <ConfigOverrides />
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="StatelessServerPkg" ServiceManifestVersion="1.0.14" />
+    <ConfigOverrides />
+    <Policies>
+      <!-- Resource Governance -->
+      <!--<ServicePackageResourceGovernancePolicy CpuCores="0.1" />
+      <ResourceGovernancePolicy CodePackageRef="Code" MemoryInMB="100" />-->
+    </Policies>
+  </ServiceManifestImport>
+  <DefaultServices>
+    <!-- The section below creates instances of service types, when an instance of this 
+         application type is created. You can also create one or more instances of service type using the 
+         ServiceFabric PowerShell module.
+         
+         The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
+    <Service Name="StatelessClient" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="StatelessClientType" InstanceCount="[StatelessClient_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="StatelessServer" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="StatelessServerType" InstanceCount="[StatelessServer_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+  </DefaultServices>
+</ApplicationManifest>
